@@ -1,0 +1,9 @@
+// header
+.header {
+  &__logo {
+    @include media-breakpoint-up(lg) {
+      width: 162px;
+      height: 42px;
+    } 
+  }
+}

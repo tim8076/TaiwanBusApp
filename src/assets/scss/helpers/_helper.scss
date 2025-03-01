@@ -1,0 +1,20 @@
+.vertical-text {
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  letter-spacing: 0.25em;
+}
+
+.h-min-body {
+  min-height: calc(100vh - 154px);
+}
+
+.h-keyboard {
+  height: calc(100vh - 510px);
+  @include media-breakpoint-up(lg) {
+    height: calc(100vh - 468px);
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
