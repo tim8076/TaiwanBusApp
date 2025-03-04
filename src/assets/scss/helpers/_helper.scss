@@ -8,6 +8,10 @@
   min-height: calc(100vh - 154px);
 }
 
+.h-body {
+  height: calc(100vh - 154px);
+}
+
 .h-keyboard {
   height: calc(100vh - 510px);
   @include media-breakpoint-up(lg) {

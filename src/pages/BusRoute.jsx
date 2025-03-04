@@ -5,7 +5,10 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getBusRouteByCity } from "../slice/busSlice"
 import { useParams } from "react-router-dom"
-import { getCityNameChinese } from "../tools/cityMap"
+import { getCityNameChinese, getCityCenterPoint } from "../tools/cityMap"
+import MapComponent from "../components/MapComponent"
+import Keyboard from '../components/Keyboard'
+import KeyboardTaipei from "../components/KeyboardTaipei"
 export default function BusRoute() {
   const [isMapShow, setIsMapShow] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -102,229 +105,27 @@ export default function BusRoute() {
                 )}
               </ul>
             </div>
-            <div className="bg-gray-100 p-7">
-              <div className="container">
-                <ul className="row gx-2 list-unstyled mb-3">
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
-                      style={{
-                        backgroundColor: '#E87E7E',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      紅
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
-                      style={{
-                        backgroundColor: '#3591C5',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      藍
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                      style={{
-                        backgroundColor: '#D5D5D5',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      1
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                      style={{
-                        backgroundColor: '#D5D5D5',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      2
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                      style={{
-                        backgroundColor: '#D5D5D5',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      3
-                    </button>
-                  </li>
-                </ul>
-                <ul className="row gx-2 list-unstyled mb-3">
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
-                      style={{
-                        backgroundColor: '#5CC1A9',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      綠
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
-                      style={{
-                        backgroundColor: '#A86556',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      棕
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                      style={{
-                        backgroundColor: '#D5D5D5',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      4
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                      style={{
-                        backgroundColor: '#D5D5D5',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      5
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                      style={{
-                        backgroundColor: '#D5D5D5',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      6
-                    </button>
-                  </li>
-                </ul>
-                <ul className="row gx-2 list-unstyled mb-3">
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
-                      style={{
-                        backgroundColor: '#EEA12E',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      橘
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
-                      style={{
-                        backgroundColor: '#DEBE4E',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      黃
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                      style={{
-                        backgroundColor: '#D5D5D5',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      7
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                      style={{
-                        backgroundColor: '#D5D5D5',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      8
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                      style={{
-                        backgroundColor: '#D5D5D5',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      9
-                    </button>
-                  </li>
-                </ul>
-                <ul className="row gx-2 list-unstyled">
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
-                      style={{
-                        backgroundColor: '#888888',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      F
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
-                      style={{
-                        backgroundColor: '#888888',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      小
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
-                      style={{
-                        backgroundColor: '#283C43',
-                      }}
-                      disabled={!searchText}
-                      onClick={backSearch}>
-                      倒退
-                    </button>
-                  </li>
-                  <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                      style={{
-                        backgroundColor: '#D5D5D5',
-                      }}
-                      onClick={(e) => searchBusRoute(e)}>
-                      0
-                    </button>
-                  </li>
-                   <li className="col">
-                    <button type="button"
-                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                      style={{
-                        backgroundColor: '#D5D5D5',
-                      }}
-                      onClick={() => setSearchText('')}>
-                      清除
-                    </button>
-                  </li>
-                </ul>
-              </div>
+            <div className="bg-gray-100 py-7 p-md-7">
+              { city === 'Taipei' ? (
+                <KeyboardTaipei searchBusRoute={searchBusRoute}
+                  searchText={searchText}
+                  backSearch={backSearch}
+                  setSearchText={setSearchText}/>
+              ) : (
+                <Keyboard searchBusRoute={searchBusRoute}
+                  searchText={searchText}
+                  backSearch={backSearch}
+                  setSearchText={setSearchText}/>
+              )}
             </div>
           </div>
           <div className="d-none d-lg-block w-lg-68">
-            <img src="https://s3-alpha-sig.figma.com/img/b1df/5d96/06c2967bea45d037558916149aaa825e?Expires=1741564800&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=VrGMK8HRvsU4s4jYl~EbzQdzeQdkpvS839QdG4Suhuiwj~CVZFC926AlI68DtXfjtx4VuwKN5sUx2vczedMrSWirpUyhOM6PD9I63kd6LzpOrUhbMUbV~3~5DMX~IQFStEIRBsLKuPsC1y1a2tH3BsdygG19fFnGNDgiVzeM2YFpNqqXUshCiTVdU79zR3PDsjGoLMXBLqMxwNnoH~jqd3HuFqqxANie03A4TashQ9EVMxEEzO-WtoUbdlihRJpne4g0MX0lfF59s27-MYEVk8jDoZsEAYzod6zwlrrJqJWuaMU8h04d48pX02SLAiIfe12V4Em84nK634CaJgKvoQ__" alt=""
-            className="w-100 h-100"/>
+            <MapComponent centerPoint={getCityCenterPoint(city)}/>
           </div>
         </div>
       ) : (
-        <div className="h-min-body">
-          <img src="https://s3-alpha-sig.figma.com/img/b1df/5d96/06c2967bea45d037558916149aaa825e?Expires=1741564800&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=VrGMK8HRvsU4s4jYl~EbzQdzeQdkpvS839QdG4Suhuiwj~CVZFC926AlI68DtXfjtx4VuwKN5sUx2vczedMrSWirpUyhOM6PD9I63kd6LzpOrUhbMUbV~3~5DMX~IQFStEIRBsLKuPsC1y1a2tH3BsdygG19fFnGNDgiVzeM2YFpNqqXUshCiTVdU79zR3PDsjGoLMXBLqMxwNnoH~jqd3HuFqqxANie03A4TashQ9EVMxEEzO-WtoUbdlihRJpne4g0MX0lfF59s27-MYEVk8jDoZsEAYzod6zwlrrJqJWuaMU8h04d48pX02SLAiIfe12V4Em84nK634CaJgKvoQ__" alt=""
-            className="w-100 h-min-body"/>
+        <div className="h-body d-lg-none">
+          <MapComponent centerPoint={getCityCenterPoint(city)}/>
         </div>
       )}
     </div>
