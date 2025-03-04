@@ -1,9 +1,43 @@
 import { NavLink } from "react-router-dom"
 import mapIcon from '../assets/images/icons/bi_map.svg'
 import heartIcon from '../assets/images/icons/carbon_favorite.svg'
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { getBusRouteByCity } from "../slice/busSlice"
+import { useParams } from "react-router-dom"
+import { getCityNameChinese } from "../tools/cityMap"
 export default function BusRoute() {
   const [isMapShow, setIsMapShow] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const { busRoutes } = useSelector((state) => state.bus);
+  const { city } = useParams();
+  const dispatch = useDispatch();
+  const searchBusRoute = (e) => {
+    const text = e.target.textContent;
+    if (isNaN(text)) {
+      setSearchText(text);
+    } else {
+      setSearchText(pre => pre + text);
+    }
+  }
+
+  const backSearch = () => {
+    setSearchText(searchText.slice(0, -1));
+  }
+
+  useEffect(() => {
+    if (searchText) {
+      if (city === 'Taipei') {
+        (async () => {
+          await dispatch(getBusRouteByCity({ searchText, city }));
+          await dispatch(getBusRouteByCity({ searchText, city: 'NewTaipei', add: true }));
+        })();
+      } else {
+        dispatch(getBusRouteByCity({ searchText, city }));
+      }
+    }
+  }, [searchText, dispatch, city]);
+
   return (
     <div className="">
       <div className="bg-gray-300 py-2 py-lg-3">
@@ -16,7 +50,7 @@ export default function BusRoute() {
                 </NavLink>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                台北市
+                { city === 'Taipei' ? '台北市/新北市' : getCityNameChinese(city) }
               </li>
             </ol>
           </nav>
@@ -33,211 +67,250 @@ export default function BusRoute() {
           <div className="d-flex flex-column w-lg-32">
             <div className="py-4 px-5">
               <input type="text"
+                value={searchText}
+                readOnly
                 className="form-control rounded-lg mb-5"
                 placeholder="請輸入公車路線" />
               <ul className="list-unstyled overflow-y-scroll h-keyboard">
-                <li className="px-3 mb-3">
-                  <div className="d-flex justify-content-between mb-1">
-                    <h2 className="fs-1">30 延</h2>
-                    <img src={heartIcon} alt="heartIcon" width={20} height={20}/>
-                  </div>
-                  <div className="d-flex justify-content-between text-gray-600 pb-3 border-bottom border-gray-500">
-                    <h3 className="fs-5">
-                      台中區監理所 - 台中火車站
-                    </h3>
-                    <p className="fs-5">台中</p>
-                  </div>
-                </li>
-                <li className="px-3 mb-3">
-                  <div className="d-flex justify-content-between mb-1">
-                    <h2 className="fs-1">30 延</h2>
-                    <img src={heartIcon} alt="heartIcon" width={20} height={20}/>
-                  </div>
-                  <div className="d-flex justify-content-between text-gray-600 pb-3 border-bottom border-gray-500">
-                    <h3 className="fs-5">
-                      台中區監理所 - 台中火車站
-                    </h3>
-                    <p className="fs-5">台中</p>
-                  </div>
-                </li>
-                <li className="px-3 mb-3">
-                  <div className="d-flex justify-content-between mb-1">
-                    <h2 className="fs-1">30 延</h2>
-                    <img src={heartIcon} alt="heartIcon" width={20} height={20}/>
-                  </div>
-                  <div className="d-flex justify-content-between text-gray-600 pb-3 border-bottom border-gray-500">
-                    <h3 className="fs-5">
-                      台中區監理所 - 台中火車站
-                    </h3>
-                    <p className="fs-5">台中</p>
-                  </div>
-                </li>
-                <li className="px-3 mb-3">
-                  <div className="d-flex justify-content-between mb-1">
-                    <h2 className="fs-1">30 延</h2>
-                    <img src={heartIcon} alt="heartIcon" width={20} height={20}/>
-                  </div>
-                  <div className="d-flex justify-content-between text-gray-600 pb-3 border-bottom border-gray-500">
-                    <h3 className="fs-5">
-                      台中區監理所 - 台中火車站
-                    </h3>
-                    <p className="fs-5">台中</p>
-                  </div>
-                </li>
-                <li className="px-3 mb-3">
-                  <div className="d-flex justify-content-between mb-1">
-                    <h2 className="fs-1">30 延</h2>
-                    <img src={heartIcon} alt="heartIcon" width={20} height={20}/>
-                  </div>
-                  <div className="d-flex justify-content-between text-gray-600 pb-3 border-bottom border-gray-500">
-                    <h3 className="fs-5">
-                      台中區監理所 - 台中火車站
-                    </h3>
-                    <p className="fs-5">台中</p>
-                  </div>
-                </li>
-                <li className="px-3 mb-3">
-                  <div className="d-flex justify-content-between mb-1">
-                    <h2 className="fs-1">30 延</h2>
-                    <img src={heartIcon} alt="heartIcon" width={20} height={20}/>
-                  </div>
-                  <div className="d-flex justify-content-between text-gray-600 pb-3 border-bottom border-gray-500">
-                    <h3 className="fs-5">
-                      台中區監理所 - 台中火車站
-                    </h3>
-                    <p className="fs-5">台中</p>
-                  </div>
-                </li>
+                {(searchText && busRoutes.length > 0) && busRoutes.map(route => {
+                  return (
+                    <li className="px-3 mb-3"
+                      key={route.RouteUID}>
+                      <NavLink to="/"
+                        className="d-block">
+                        <div className="d-flex justify-content-between mb-1">
+                          <h2 className="fs-1">
+                            { route.RouteName?.Zh_tw }
+                          </h2>
+                          <img src={heartIcon} alt="heartIcon" width={20} height={20}/>
+                        </div>
+                        <div className="d-flex justify-content-between text-gray-600 pb-3 border-bottom border-gray-500">
+                          <h3 className="fs-5">
+                            {route.DepartureStopNameZh} - {route.DestinationStopNameZh}
+                          </h3>
+                          <p className="fs-5">{getCityNameChinese(route.City)}</p>
+                        </div>
+                      </NavLink>
+                    </li>
+                  )
+                })}
+                {(searchText && busRoutes.length === 0) && (
+                  <p className="text-center py-5">查無路線資料，請試試其他路線</p>
+                )}
+                { !searchText && (
+                  <p className="text-center py-5">請透過下方鍵盤查詢路線</p>
+                )}
               </ul>
             </div>
             <div className="bg-gray-100 p-7">
               <div className="container">
-                <ul className="row gap-3 list-unstyled mb-3">
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-light rounded-3"
-                    style={{
-                      backgroundColor: '#E87E7E',
-                    }}>
-                    紅
+                <ul className="row gx-2 list-unstyled mb-3">
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
+                      style={{
+                        backgroundColor: '#E87E7E',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      紅
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-light rounded-3"
-                    style={{
-                      backgroundColor: '#3591C5',
-                    }}>
-                    藍
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
+                      style={{
+                        backgroundColor: '#3591C5',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      藍
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                    style={{
-                      backgroundColor: '#D5D5D5',
-                    }}>
-                    1
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
+                      style={{
+                        backgroundColor: '#D5D5D5',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      1
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                    style={{
-                      backgroundColor: '#D5D5D5',
-                    }}>
-                    2
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
+                      style={{
+                        backgroundColor: '#D5D5D5',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      2
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                    style={{
-                      backgroundColor: '#D5D5D5',
-                    }}>
-                    3
-                  </li>
-                </ul>
-                <ul className="row gap-3 list-unstyled mb-3">
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-light rounded-3"
-                    style={{
-                      backgroundColor: '#5CC1A9',
-                    }}>
-                    綠
-                  </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-light rounded-3"
-                    style={{
-                      backgroundColor: '#A86556',
-                    }}>
-                    棕
-                  </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                    style={{
-                      backgroundColor: '#D5D5D5',
-                    }}>
-                    4
-                  </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                    style={{
-                      backgroundColor: '#D5D5D5',
-                    }}>
-                    5
-                  </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                    style={{
-                      backgroundColor: '#D5D5D5',
-                    }}>
-                    6
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
+                      style={{
+                        backgroundColor: '#D5D5D5',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      3
+                    </button>
                   </li>
                 </ul>
-                <ul className="row gap-3 list-unstyled mb-3">
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-light rounded-3"
-                    style={{
-                      backgroundColor: '#EEA12E',
-                    }}>
-                    橘
+                <ul className="row gx-2 list-unstyled mb-3">
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
+                      style={{
+                        backgroundColor: '#5CC1A9',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      綠
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-light rounded-3"
-                    style={{
-                      backgroundColor: '#DEBE4E',
-                    }}>
-                    黃
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
+                      style={{
+                        backgroundColor: '#A86556',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      棕
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                    style={{
-                      backgroundColor: '#D5D5D5',
-                    }}>
-                    7
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
+                      style={{
+                        backgroundColor: '#D5D5D5',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      4
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                    style={{
-                      backgroundColor: '#D5D5D5',
-                    }}>
-                    8
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
+                      style={{
+                        backgroundColor: '#D5D5D5',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      5
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                    style={{
-                      backgroundColor: '#D5D5D5',
-                    }}>
-                    9
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
+                      style={{
+                        backgroundColor: '#D5D5D5',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      6
+                    </button>
                   </li>
                 </ul>
-                <ul className="row gap-3 list-unstyled">
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-light rounded-3"
-                    style={{
-                      backgroundColor: '#888888',
-                    }}>
-                    F
+                <ul className="row gx-2 list-unstyled mb-3">
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
+                      style={{
+                        backgroundColor: '#EEA12E',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      橘
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-light rounded-3"
-                    style={{
-                      backgroundColor: '#888888',
-                    }}>
-                    小
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
+                      style={{
+                        backgroundColor: '#DEBE4E',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      黃
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-light rounded-3"
-                    style={{
-                      backgroundColor: '#283C43',
-                    }}>
-                    *
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
+                      style={{
+                        backgroundColor: '#D5D5D5',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      7
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                    style={{
-                      backgroundColor: '#D5D5D5',
-                    }}>
-                    0
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
+                      style={{
+                        backgroundColor: '#D5D5D5',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      8
+                    </button>
                   </li>
-                  <li className="col cursor-pointer py-3 fs-5 lh-sm text-center text-dark rounded-3"
-                    style={{
-                      backgroundColor: '#D5D5D5',
-                    }}>
-                    9
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
+                      style={{
+                        backgroundColor: '#D5D5D5',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      9
+                    </button>
+                  </li>
+                </ul>
+                <ul className="row gx-2 list-unstyled">
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
+                      style={{
+                        backgroundColor: '#888888',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      F
+                    </button>
+                  </li>
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
+                      style={{
+                        backgroundColor: '#888888',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      小
+                    </button>
+                  </li>
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-light rounded-3"
+                      style={{
+                        backgroundColor: '#283C43',
+                      }}
+                      disabled={!searchText}
+                      onClick={backSearch}>
+                      倒退
+                    </button>
+                  </li>
+                  <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
+                      style={{
+                        backgroundColor: '#D5D5D5',
+                      }}
+                      onClick={(e) => searchBusRoute(e)}>
+                      0
+                    </button>
+                  </li>
+                   <li className="col">
+                    <button type="button"
+                      className="w-100 btn py-3 fs-5 lh-sm text-center text-dark rounded-3"
+                      style={{
+                        backgroundColor: '#D5D5D5',
+                      }}
+                      onClick={() => setSearchText('')}>
+                      清除
+                    </button>
                   </li>
                 </ul>
               </div>

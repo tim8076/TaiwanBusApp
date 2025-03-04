@@ -3,40 +3,34 @@ import CardArea from '../components/CardArea'
 export default function Home() {
   const places = [
     {
-      path: '/',
+      path: '/bus-route/Taipei',
       title: '台北市 / 新北市',
-      subtitle: 'Taipei / New Taipei',
+      subtitle: 'Taipei',
       color: 'text-primary-500',
     },
     {
-      path: '/',
+      path: '/bus-route/Taoyuan',
       title: '桃園市',
       subtitle: 'Taoyuan',
       color: 'text-primary-400',
     },
     {
-      path: '/',
+      path: '/bus-route/Taichung',
       title: '台中市',
       subtitle: 'Taichung',
       color: 'text-secondary',
     },
     {
-      path: '/',
+      path: '/bus-route/Tainan',
       title: '台南市',
       subtitle: 'Tainan',
       color: 'text-primary-100',
     },
     {
-      path: '/',
+      path: '/bus-route/Kaohsiung',
       title: '高雄市',
       subtitle: 'Kaohsiung',
       color: 'text-primary-200',
-    },
-    {
-      path: '/',
-      title: '其他地區',
-      subtitle: 'Other City',
-      color: 'text-primary-300',
     },
   ];
   return (

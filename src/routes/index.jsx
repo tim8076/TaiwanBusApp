@@ -12,7 +12,7 @@ const routes = [
         element: <Home />
       },
       {
-        path: '/bus-route',
+        path: '/bus-route/:city',
         element: <BusRoute />
       }
     ],
