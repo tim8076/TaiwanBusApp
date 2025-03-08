@@ -1,6 +1,7 @@
 import App from '../App';
 import Home from '../pages/Home';
 import BusRoute from '../pages/BusRoute';
+import BusStops from '../pages/BusStops';
 import { createHashRouter } from 'react-router-dom';
 const routes = [
   {
@@ -14,6 +15,10 @@ const routes = [
       {
         path: '/bus-route/:city',
         element: <BusRoute />
+      },
+      {
+        path: '/bus-stops',
+        element: <BusStops />
       }
     ],
   },

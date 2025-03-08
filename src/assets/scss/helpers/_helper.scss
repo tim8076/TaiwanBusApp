@@ -19,6 +19,13 @@
   }
 }
 
+.h-routes {
+  height: calc(100vh - 400px);
+  @include media-breakpoint-up(lg) {
+    height: calc(100vh - 446px);
+  }
+}
+
 .cursor-pointer {
   cursor: pointer;
 }

@@ -1,28 +1,44 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getBusRoutes } from "../connection/connection";
+import {
+  getBusRoutes,
+  getBusStopsData,
+  getBusRouteInfoData,
+  getBusStopsTimeData
+} from "../connection/connection";
 
 export const busSlice = createSlice({
   name: "bus",
   initialState: {
     busRoutes: [],
+    busStops: [],
+    busStopsEstimatedTime: [],
+    busRouteInfo: [],
   },
   reducers: {
     setBusRoutes(state, action) {
-      console.log(action)
       if (action.payload.add) {
         state.busRoutes = [...state.busRoutes, ...action.payload.data];
       } else {
         state.busRoutes = action.payload.data;
       }
     },
+    setBusStops(state, action) {
+      state.busStops = action.payload;
+    },
+    setBusRouteInfo(state, action) {
+      state.busRouteInfo = action.payload;
+    },
+    setBusRouteTime(state, action) {
+      state.busStopsEstimatedTime = action.payload;
+    }
   },
 });
+
 
 // 取得指定公車路線
 export const getBusRouteByCity = createAsyncThunk(
   'bus/getBusRouteByCity',
   async ({ searchText, city, add }, { dispatch }) => {
-    console.log(searchText, city)
     try {
       const res = await getBusRoutes(searchText, city);
       dispatch(setBusRoutes({
@@ -35,5 +51,50 @@ export const getBusRouteByCity = createAsyncThunk(
   },
 );
 
-export const { setBusRoutes } = busSlice.actions;
+// 取得公車路線站牌資料
+export const getBusStops = createAsyncThunk(
+  'bus/getBusStops',
+  async ({ city, routeName }, { dispatch }) => {
+    try {
+      const res = await getBusStopsData(city, routeName);
+      dispatch(setBusStops(res.data));
+    } catch (error) {
+      console.log(error);
+    }
+  },
+);
+
+// 取得指定路線預估到站時間資料
+export const getBusRouteTime = createAsyncThunk(
+  'bus/getBusRouteTime',
+  async ({ city, routeName }, { dispatch }) => {
+    try {
+      const res = await getBusStopsTimeData(city, routeName);
+      console.log('time', res.data)
+      dispatch(setBusRouteTime(res.data));
+    } catch (error) {
+      console.log(error);
+    }
+  },
+);
+
+// 取得指定路線公車營運資料
+export const getBusRouteInfo = createAsyncThunk(
+  'bus/getBusRouteInfo',
+  async ({ city, routeName }, { dispatch }) => {
+    try {
+      const res = await getBusRouteInfoData(city, routeName);
+      dispatch(setBusRouteInfo(res.data));
+    } catch (error) {
+      console.log(error);
+    }
+  },
+);
+
+export const {
+  setBusRoutes,
+  setBusStops,
+  setBusRouteInfo,
+  setBusRouteTime,
+} = busSlice.actions;
 export default busSlice.reducer;

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom"
+import { NavLink, Link } from "react-router-dom"
 import mapIcon from '../assets/images/icons/bi_map.svg'
 import heartIcon from '../assets/images/icons/carbon_favorite.svg'
 import { useEffect, useState } from "react"
@@ -79,7 +79,7 @@ export default function BusRoute() {
                   return (
                     <li className="px-3 mb-3"
                       key={route.RouteUID}>
-                      <NavLink to="/"
+                      <Link to={`/bus-stops?city=${route.City}&routeName=${route.RouteName.Zh_tw}`}
                         className="d-block">
                         <div className="d-flex justify-content-between mb-1">
                           <h2 className="fs-1">
@@ -93,7 +93,7 @@ export default function BusRoute() {
                           </h3>
                           <p className="fs-5">{getCityNameChinese(route.City)}</p>
                         </div>
-                      </NavLink>
+                      </Link>
                     </li>
                   )
                 })}

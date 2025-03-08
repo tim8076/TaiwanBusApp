@@ -31,7 +31,20 @@ export const setRequestToken = (token) => {
 }
 
 // 可以統一管理 API Call
+
+// 取得指定縣市公車路線資料
 export const getBusRoutes = (searchText, city) => userRequest.get(`/v2/Bus/Route/City/${city}?format=JSON&$filter=contains(RouteName/Zh_tw, '${searchText}')`);
+
+// 取得指定路線站牌資料
+export const getBusStopsData = (city, routeName) => userRequest.get(`/v2/Bus/DisplayStopOfRoute/City/${city}/${routeName}?format=JSON`);
+
+// 取得指定路線站牌到站時間資料
+export const getBusStopsTimeData = (city, routeName) => userRequest.get(`/v2/Bus/EstimatedTimeOfArrival/City/${city}/${routeName}?format=JSON`);
+
+// 取得指定路線詳細資料(起始終點站、營運公司、收費方式等)
+export const getBusRouteInfoData = (city, routeName) => userRequest.get(`/v2/Bus/Route/City/${city}/${routeName}?format=JSON`);
+
+
 
 
 

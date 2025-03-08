@@ -1,7 +1,7 @@
 
 ## color
 ```scss
-$primary:       #283C43; //$blue !default;
+$primary:       #355F8B; //$blue !default;
 $primary-100:   #7FC0C5; 
 $primary-200:   #5E9BAE; 
 $primary-300:   #52797C; 
