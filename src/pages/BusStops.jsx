@@ -5,7 +5,7 @@ import arrowLeftIcom from '../assets/images/icons/arrow-left.svg'
 import { useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getCityNameChinese, getCityCenterPoint } from "../tools/cityMap"
-import MapComponent from "../components/MapComponent"
+import MapBusStops from '../components/MapBusStops';
 import { Link, useSearchParams } from "react-router-dom"
 import { showBusStatus } from "../tools/tools"
 import {
@@ -43,7 +43,8 @@ export default function BusRoute() {
     })
     return stopsWithTime ? stopsWithTime : [];
   }, [busStops, routeDirection, routeName, busStopsEstimatedTime]);
-  const routeInfo = busRouteInfo.find(route => route.RouteID === busStops[0].RouteID) || {};
+  const routeInfo = busRouteInfo.find(route => route.RouteID === busStops[0]?.RouteID) || {};
+  console.log(currentStops)
   
   useEffect(() => {
     dispatch(getBusStops({ city, routeName }));
@@ -137,12 +138,16 @@ export default function BusRoute() {
             </div>
           </div>
           <div className="d-none d-lg-block w-lg-68">
-            <MapComponent centerPoint={getCityCenterPoint(city)}/>
+            { currentStops.length > 0 && (
+              <MapBusStops currentStops={currentStops} />
+            )}
           </div>
         </div>
       ) : (
         <div className="h-body d-lg-none">
-          <MapComponent centerPoint={getCityCenterPoint(city)}/>
+          { currentStops.length > 0 && (
+            <MapBusStops currentStops={currentStops} />
+          )}
         </div>
       )}
     </div>

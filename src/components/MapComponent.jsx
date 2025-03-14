@@ -1,7 +1,7 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import { MapContainer, TileLayer, Marker, } from "react-leaflet";
 
 export default function MapComponent({ centerPoint }) {
+  console.log(centerPoint)
   return (
     <MapContainer
       center={centerPoint} // 台北 101 經緯度

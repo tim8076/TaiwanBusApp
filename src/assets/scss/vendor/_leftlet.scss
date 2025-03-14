@@ -1,0 +1,15 @@
+.leaflet-popup .leaflet-popup-content-wrapper {
+  background-color: $primary;
+  color: $light;
+  border: 2px solid $light;
+}
+
+.leaflet-popup.active .leaflet-popup-content-wrapper {
+  background-color: $secondary !important;
+  color: $light !important;
+  border: 2px solid $light !important;
+}
+
+.leaflet-container .leaflet-popup a.leaflet-popup-close-button {
+  display: none;
+}
