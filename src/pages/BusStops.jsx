@@ -44,13 +44,35 @@ export default function BusRoute() {
     return stopsWithTime ? stopsWithTime : [];
   }, [busStops, routeDirection, routeName, busStopsEstimatedTime]);
   const routeInfo = busRouteInfo.find(route => route.RouteID === busStops[0]?.RouteID) || {};
-  console.log(currentStops)
   
-  useEffect(() => {
+  const getBusData = ({ city, routeName }) => {
     dispatch(getBusStops({ city, routeName }));
+    dispatch(getBusRouteTime({ city, routeName }));
+  }
+
+  useEffect(() => {
+    getBusData({ city, routeName });
     dispatch(getBusRouteInfo({ city, routeName }));
-    dispatch(getBusRouteTime({ city, routeName }))
   }, [city, routeName, dispatch]);
+
+  // 每20秒重新取得資料
+  let [countTime, setCountTime] = useState(20);
+  const updateBusData = () => {
+    setCountTime(20);
+    getBusData({ city, routeName });
+  }
+
+  useEffect(() => {
+    // const interval = setInterval(() => {
+    //   if (countTime === 0) {
+    //     setCountTime(20);
+    //     getBusData({ city, routeName });
+    //   } else {
+    //     setCountTime(countTime - 1);
+    //   }
+    // }, 1000);
+    // return () => clearInterval(interval);
+  }, [countTime]);
 
   return (
     <div className="">
@@ -129,9 +151,10 @@ export default function BusRoute() {
                 </ul>
               </div>
               <div className="py-4 px-5 d-flex justify-content-between border-top border-gray-500">
-                <p>20秒後更新</p>
+                <p>{countTime} 秒後更新</p>
                 <button type="button"
-                  className="btn p-0">
+                  className="btn p-0"
+                  onClick={updateBusData}>
                   立即更新
                 </button>
               </div>

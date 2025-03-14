@@ -1,4 +1,5 @@
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
+import { memo } from "react";
 import { showBusStatus } from "../tools/tools";
 import L from 'leaflet';
 import markerIcon from '../assets/images/icons/bus-stop-marker.png';
@@ -11,7 +12,8 @@ const stopMarker = new L.Icon({
 const stopMarkerActive = new L.Icon({
   iconUrl: markerIconACtive,
 });
-export default function MapComponent({ currentStops }) {
+export default memo(function MapComponent({ currentStops }) {
+  console.log(currentStops)
   const route = currentStops.map((stop) => {
     const { PositionLat, PositionLon } = stop.StopPosition;
     return [Number(PositionLat), Number(PositionLon)];
@@ -25,8 +27,6 @@ export default function MapComponent({ currentStops }) {
       time: showBusStatus(stop.time, stop.status).text,
     }
   })
-  console.log(currentStops);
-  console.log(stations)
   return (
     <MapContainer
       center={centerPoint}
@@ -75,4 +75,4 @@ export default function MapComponent({ currentStops }) {
       <FixMapDisplay />
     </MapContainer>
   );
-}
+});
