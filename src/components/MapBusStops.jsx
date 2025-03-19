@@ -1,19 +1,20 @@
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
-import { memo } from "react";
+import { memo, useEffect, useRef } from "react";
 import { showBusStatus } from "../tools/tools";
 import L from 'leaflet';
 import markerIcon from '../assets/images/icons/bus-stop-marker.png';
 import markerIconACtive from '../assets/images/icons/bus-stop-marker-active.png';
 import busIcon from '../assets/images/icons/carbon_bus-light.svg';
 import FixMapDisplay from './FixMapDisplay';
+import MapFitBound from "./MapFitBound";
+import MapMoveToStop from "./MapMoveToStop";
 const stopMarker = new L.Icon({
   iconUrl: markerIcon,
 });
 const stopMarkerActive = new L.Icon({
   iconUrl: markerIconACtive,
 });
-export default memo(function MapComponent({ currentStops }) {
-  console.log(currentStops)
+export default memo(function MapComponent({ currentStops, selectBusStop }) {
   const route = currentStops.map((stop) => {
     const { PositionLat, PositionLon } = stop.StopPosition;
     return [Number(PositionLat), Number(PositionLon)];
@@ -22,11 +23,27 @@ export default memo(function MapComponent({ currentStops }) {
   const stations = currentStops.map((stop) => {
     const { PositionLat, PositionLon } = stop.StopPosition;
     return {
+      id: stop.StopID,
       position: [PositionLat, PositionLon],
       name: stop.StopName.Zh_tw,
       time: showBusStatus(stop.time, stop.status).text,
     }
-  })
+  });
+  
+  // 移動到選擇站牌
+  const selectStop = currentStops.find((stop) => stop.StopID === selectBusStop);
+  const selectStopPosition = [selectStop?.StopPosition?.PositionLat, selectStop?.StopPosition?.PositionLon];
+
+  // 打開選擇站牌的 marker
+  const markerRefs = useRef([]);
+
+  useEffect(() => {
+    const marker = markerRefs.current.find(ref => {
+      return ref?.options.options.id === selectBusStop;
+    });
+    if (marker) marker.openPopup();
+  }, [selectBusStop, markerRefs])
+
   return (
     <MapContainer
       center={centerPoint}
@@ -51,7 +68,9 @@ export default memo(function MapComponent({ currentStops }) {
           : '';
         return (
           <Marker key={index}
+            ref={(el) => (markerRefs.current[index] = el)}
             position={station.position}
+            options={{ id: station.id }}
             icon={maker}>
             <Popup className={bgColor}>
               { station.time === '進站中' && (
@@ -72,6 +91,10 @@ export default memo(function MapComponent({ currentStops }) {
       {/* 標記點 */}
       {/* <Marker position={centerPoint}>
       </Marker> */}
+      <MapFitBound route={route}/>
+      { selectStopPosition[0] && (
+        <MapMoveToStop position={selectStopPosition}/> 
+      )}
       <FixMapDisplay />
     </MapContainer>
   );

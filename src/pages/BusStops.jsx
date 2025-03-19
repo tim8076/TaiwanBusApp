@@ -4,7 +4,7 @@ import heartIcon from '../assets/images/icons/carbon_favorite.svg'
 import arrowLeftIcom from '../assets/images/icons/arrow-left.svg'
 import { useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { getCityNameChinese, getCityCenterPoint } from "../tools/cityMap"
+import { getCityNameChinese } from "../tools/cityMap"
 import MapBusStops from '../components/MapBusStops';
 import { Link, useSearchParams } from "react-router-dom"
 import { showBusStatus } from "../tools/tools"
@@ -27,6 +27,10 @@ export default function BusRoute() {
     busStopsEstimatedTime,
   } = useSelector((state) => state.bus);
   const [routeDirection, setRouteDirection] = useState(0);
+  const changeRouteDirection = (direction) => {
+    setRouteDirection(direction);
+    setSelectBusStop('');
+  }
   const currentStops = useMemo(() => {
     const stops = busStops.filter(stop => {
       return stop.Direction === routeDirection
@@ -73,6 +77,9 @@ export default function BusRoute() {
     // }, 1000);
     // return () => clearInterval(interval);
   }, [countTime]);
+
+  // 選取站牌功能
+  const [selectBusStop, setSelectBusStop] = useState('');
 
   return (
     <div className="">
@@ -124,22 +131,27 @@ export default function BusRoute() {
               <div className="d-flex">
                 <button type="button"
                   className={`btn py-3 w-50 rounded-0 rounded-top ${routeDirection === 0 ? 'bg-primary text-light' : 'bg-gray-500 text-dark'}`}
-                  onClick={() => setRouteDirection(0)}>
+                  onClick={() => changeRouteDirection(0)}>
                   往 { routeInfo.DestinationStopNameZh }
                 </button>
                 <button type="button"
                   className={`btn py-3 w-50 rounded-0 rounded-top ${routeDirection === 1 ? 'bg-primary text-light' : 'bg-gray-500 text-dark'}`}
-                  onClick={() => setRouteDirection(1)}>
+                  onClick={() => changeRouteDirection(1)}>
                   往 { routeInfo.DepartureStopNameZh }
                 </button>
               </div>
               <div className="py-6 px-5 h-routes overflow-y-scroll">
                 <ul className="list-unstyled">
                   { currentStops.map(stop => {
+                    const isSelect = selectBusStop === stop.StopID;
                     return (
-                      <li className={`bus-stop-item py-4 d-flex align-items-center border-bottom border-gray-500 ${showBusStatus(stop.time, stop.status).class}`}
+                      <li className={`bus-stop-item py-4 d-flex align-items-center border-bottom border-gray-500 ${showBusStatus(stop.time, stop.status).class} position-relative ${isSelect ? 'bg-gray-300' : ''}`}
                         key={stop.StopID}>
-                        <div className="time py-1 px-4 rounded-3 text-light me-4 w-25 fs-5 text-center">
+                        <button type="button"
+                          className="btn p-0 stretched-link"
+                          onClick={() => setSelectBusStop(stop.StopID)}>
+                        </button>
+                        <div className="time p-1 px-4 rounded-3 text-light me-4 w-25 fs-6 fs-md-5 text-center">
                           { showBusStatus(stop.time, stop.status).text }
                         </div>
                         <h3 className="title fw-normal w-75">
@@ -162,14 +174,18 @@ export default function BusRoute() {
           </div>
           <div className="d-none d-lg-block w-lg-68">
             { currentStops.length > 0 && (
-              <MapBusStops currentStops={currentStops} />
+              <MapBusStops
+                key={routeDirection}
+                currentStops={currentStops}
+                selectBusStop={selectBusStop}/>
             )}
           </div>
         </div>
       ) : (
         <div className="h-body d-lg-none">
           { currentStops.length > 0 && (
-            <MapBusStops currentStops={currentStops} />
+            <MapBusStops currentStops={currentStops}
+              selectBusStop={selectBusStop}/>
           )}
         </div>
       )}

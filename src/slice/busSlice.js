@@ -70,7 +70,6 @@ export const getBusRouteTime = createAsyncThunk(
   async ({ city, routeName }, { dispatch }) => {
     try {
       const res = await getBusStopsTimeData(city, routeName);
-      console.log('time', res.data)
       dispatch(setBusRouteTime(res.data));
     } catch (error) {
       console.log(error);
