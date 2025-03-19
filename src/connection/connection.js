@@ -41,8 +41,13 @@ export const getBusStopsData = (city, routeName) => userRequest.get(`/v2/Bus/Dis
 // 取得指定路線站牌到站時間資料
 export const getBusStopsTimeData = (city, routeName) => userRequest.get(`/v2/Bus/EstimatedTimeOfArrival/City/${city}/${routeName}?format=JSON`);
 
+// 取得指定路線公車動態定點資料
+export const getBusRealTimeStop = (city, routeName) => userRequest.get(`/v2/Bus/RealTimeNearStop/City/${city}/${routeName}?format=JSON`);
+
 // 取得指定路線詳細資料(起始終點站、營運公司、收費方式等)
 export const getBusRouteInfoData = (city, routeName) => userRequest.get(`/v2/Bus/Route/City/${city}/${routeName}?format=JSON`);
+
+
 
 
 

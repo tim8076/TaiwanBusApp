@@ -11,7 +11,8 @@ import { showBusStatus } from "../tools/tools"
 import {
   getBusStops,
   getBusRouteInfo,
-  getBusRouteTime
+  getBusRouteTime,
+  getBusPosition,
 } from "../slice/busSlice"
 export default function BusRoute() {
   const [isMapShow, setIsMapShow] = useState(false);
@@ -25,6 +26,7 @@ export default function BusRoute() {
     busStops,
     busRouteInfo,
     busStopsEstimatedTime,
+    busRealTimePositions,
   } = useSelector((state) => state.bus);
   const [routeDirection, setRouteDirection] = useState(0);
   const changeRouteDirection = (direction) => {
@@ -47,11 +49,23 @@ export default function BusRoute() {
     })
     return stopsWithTime ? stopsWithTime : [];
   }, [busStops, routeDirection, routeName, busStopsEstimatedTime]);
+
+  const currentStopsWithBusPosition = useMemo(() => {
+    return currentStops.map((stop) => {
+      const bus = busRealTimePositions.find(bus => bus.StopID === stop.StopID);
+      if (!bus) return stop;
+      return {
+        ...stop,
+        PlateNumb: bus.PlateNumb,
+      } 
+    });
+  }, [currentStops]);
   const routeInfo = busRouteInfo.find(route => route.RouteID === busStops[0]?.RouteID) || {};
   
   const getBusData = ({ city, routeName }) => {
     dispatch(getBusStops({ city, routeName }));
     dispatch(getBusRouteTime({ city, routeName }));
+    dispatch(getBusPosition({ city, routeName }));
   }
 
   useEffect(() => {
@@ -142,7 +156,7 @@ export default function BusRoute() {
               </div>
               <div className="py-6 px-5 h-routes overflow-y-scroll">
                 <ul className="list-unstyled">
-                  { currentStops.map(stop => {
+                  { currentStopsWithBusPosition.map(stop => {
                     const isSelect = selectBusStop === stop.StopID;
                     return (
                       <li className={`bus-stop-item py-4 d-flex align-items-center border-bottom border-gray-500 ${showBusStatus(stop.time, stop.status).class} position-relative ${isSelect ? 'bg-gray-300' : ''}`}
@@ -154,9 +168,16 @@ export default function BusRoute() {
                         <div className="time p-1 px-4 rounded-3 text-light me-4 w-25 fs-6 fs-md-5 text-center">
                           { showBusStatus(stop.time, stop.status).text }
                         </div>
-                        <h3 className="title fw-normal w-75">
-                          {stop.StopName?.Zh_tw}
-                        </h3>
+                        <div className="w-75 d-flex justify-content-between pe-3">
+                          <h3 className="title fw-normal">
+                            {stop.StopName?.Zh_tw}
+                          </h3>
+                          { stop.PlateNumb && (
+                            <p className="fs-6 text-secondary fw-bold">
+                              { stop.PlateNumb }
+                            </p>
+                          )}
+                        </div>
                       </li>
                     )
                   })}
