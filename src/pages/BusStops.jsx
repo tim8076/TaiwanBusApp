@@ -28,6 +28,7 @@ export default function BusRoute() {
     busStopsEstimatedTime,
     busRealTimePositions,
   } = useSelector((state) => state.bus);
+  console.log(busRealTimePositions)
   const [routeDirection, setRouteDirection] = useState(0);
   const changeRouteDirection = (direction) => {
     setRouteDirection(direction);
@@ -198,6 +199,7 @@ export default function BusRoute() {
               <MapBusStops
                 key={routeDirection}
                 currentStops={currentStops}
+                busRealTimePositions={busRealTimePositions}
                 selectBusStop={selectBusStop}/>
             )}
           </div>
@@ -205,7 +207,10 @@ export default function BusRoute() {
       ) : (
         <div className="h-body d-lg-none">
           { currentStops.length > 0 && (
-            <MapBusStops currentStops={currentStops}
+            <MapBusStops
+              key={routeDirection}
+              currentStops={currentStops}
+              busRealTimePositions={busRealTimePositions}
               selectBusStop={selectBusStop}/>
           )}
         </div>

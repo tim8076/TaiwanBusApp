@@ -4,7 +4,7 @@ import { showBusStatus } from "../tools/tools";
 import L from 'leaflet';
 import markerIcon from '../assets/images/icons/bus-stop-marker.png';
 import markerIconACtive from '../assets/images/icons/bus-stop-marker-active.png';
-import busIcon from '../assets/images/icons/carbon_bus-light.svg';
+import busArriveIcon from '../assets/images/icons/bus-arrive-icon.svg';
 import FixMapDisplay from './FixMapDisplay';
 import MapFitBound from "./MapFitBound";
 import MapMoveToStop from "./MapMoveToStop";
@@ -15,7 +15,11 @@ const stopMarker = new L.Icon({
 const stopMarkerActive = new L.Icon({
   iconUrl: markerIconACtive,
 });
-export default memo(function MapComponent({ currentStops, selectBusStop }) {
+const busIcon = new L.Icon({
+  iconUrl: busArriveIcon,
+  iconAnchor: [20, -10],
+});
+export default memo(function MapComponent({ currentStops, selectBusStop, busRealTimePositions }) {
   const route = currentStops.map((stop) => {
     const { PositionLat, PositionLon } = stop.StopPosition;
     return [Number(PositionLat), Number(PositionLon)];
@@ -30,6 +34,17 @@ export default memo(function MapComponent({ currentStops, selectBusStop }) {
       time: showBusStatus(stop.time, stop.status).text,
     }
   });
+
+  // bus positon
+  console.log('busRealTimePositions', busRealTimePositions);
+  console.log('currentStop', currentStops)
+  const busPosition = currentStops.filter(stop => {
+    return busRealTimePositions.find(bus => bus.StopID === stop.StopID);
+  }).map(bus => {
+    const { PositionLat, PositionLon } = bus.StopPosition;
+    return [PositionLat, PositionLon];
+  });
+  console.log(busPosition)
   
   // 移動到選擇站牌
   const selectStop = currentStops.find((stop) => stop.StopID === selectBusStop);
@@ -94,9 +109,15 @@ export default memo(function MapComponent({ currentStops, selectBusStop }) {
           // </Marker>
         )
       })}
-      {/* 標記點 */}
-      {/* <Marker position={centerPoint}>
-      </Marker> */}
+
+      { busPosition.map((bus, index) => {
+        return (
+          <Marker key={index}
+            position={bus}
+            icon={busIcon}
+          />
+        )
+      })}
       <MapFitBound route={route}/>
       { selectStopPosition[0] && (
         <MapMoveToStop position={selectStopPosition}/> 
