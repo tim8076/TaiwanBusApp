@@ -4,7 +4,8 @@ import {
   getBusStopsData,
   getBusRouteInfoData,
   getBusStopsTimeData,
-  getBusRealTimeStop
+  getBusRealTimeStop,
+  getBusRouteOperator,
 } from "../connection/connection";
 
 export const busSlice = createSlice({
@@ -15,6 +16,7 @@ export const busSlice = createSlice({
     busStopsEstimatedTime: [],
     busRouteInfo: [],
     busRealTimePositions: [],
+    busOperator: [],
   },
   reducers: {
     setBusRoutes(state, action) {
@@ -35,6 +37,9 @@ export const busSlice = createSlice({
     },
     setBusPosition(state, action) {
       state.busRealTimePositions = action.payload;
+    },
+    setBusOperator(state, action) {
+      state.busOperator = action.payload;
     }
   },
 });
@@ -109,11 +114,25 @@ export const getBusRouteInfo = createAsyncThunk(
   },
 );
 
+// 取得指定路線公車營運資料
+export const getBusOperator= createAsyncThunk(
+  'bus/getBusOperator',
+  async ({ city }, { dispatch }) => {
+    try {
+      const res = await getBusRouteOperator(city);
+      dispatch(setBusOperator(res.data));
+    } catch (error) {
+      console.log(error);
+    }
+  },
+);
+
 export const {
   setBusRoutes,
   setBusStops,
   setBusRouteInfo,
   setBusRouteTime,
   setBusPosition,
+  setBusOperator,
 } = busSlice.actions;
 export default busSlice.reducer;

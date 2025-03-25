@@ -47,6 +47,9 @@ export const getBusRealTimeStop = (city, routeName) => userRequest.get(`/v2/Bus/
 // 取得指定路線詳細資料(起始終點站、營運公司、收費方式等)
 export const getBusRouteInfoData = (city, routeName) => userRequest.get(`/v2/Bus/Route/City/${city}/${routeName}?format=JSON`);
 
+// 取得指定路線營運業者資料
+export const getBusRouteOperator = (city) => userRequest.get(`/v2/Bus/Operator/City/${city}?format=JSON`);
+
 
 
 

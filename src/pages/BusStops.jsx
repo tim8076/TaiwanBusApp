@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom"
 import mapIcon from '../assets/images/icons/bi_map.svg'
 import heartIcon from '../assets/images/icons/carbon_favorite.svg'
+import infoIcon from '../assets/images/icons/info-icon.svg'
 import arrowLeftIcom from '../assets/images/icons/arrow-left.svg'
 import { useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
@@ -112,12 +113,27 @@ export default function BusRoute() {
               </li>
             </ol>
           </nav>
-          <button type="button"
-            className="btn p-0 d-flex align-items-center d-lg-none"
-            onClick={() => setIsMapShow(!isMapShow)}>
-            <img src={mapIcon} alt="mapIcon" width={16} height={16}/>
-            <span className="ms-1">地圖</span>
-          </button>
+          <ul className="list-unstyled d-flex align-items-center">
+            <li className="me-3 me-md-0">
+              <NavLink className="d-flex align-items-center"
+                to={`/bus-info?city=${city}&routeName=${routeName}`}>
+                <img src={infoIcon}
+                  className="me-1"
+                  alt="infoIcon"
+                  width={16}
+                  height={16}/>
+                路線資訊
+              </NavLink>
+            </li>
+            <li>
+              <button type="button"
+                className="btn p-0 d-flex align-items-center d-lg-none"
+                onClick={() => setIsMapShow(!isMapShow)}>
+                <img src={mapIcon} alt="mapIcon" width={16} height={16}/>
+                <span className="ms-1">地圖</span>
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
       { !isMapShow ? (
