@@ -10,6 +10,7 @@ import MapComponent from "../components/MapComponent"
 import Keyboard from '../components/Keyboard'
 import KeyboardTaipei from "../components/KeyboardTaipei"
 import useLocalStorage from "../hooks/useLocalStorage"
+import ModalFavorite from "../components/ModalFavorite"
 import { Modal } from "bootstrap"
 export default function BusRoute() {
   const [isMapShow, setIsMapShow] = useState(false);
@@ -25,7 +26,6 @@ export default function BusRoute() {
       setSearchText(pre => pre + text);
     }
   }
-  console.log(busRoutes)
   
   const backSearch = () => {
     setSearchText(searchText.slice(0, -1));
@@ -66,6 +66,9 @@ export default function BusRoute() {
 
   const openModal = () => {
     favoriteModalRef.current.show();
+  }
+  const closeModal = () => {
+    favoriteModalRef.current.hide();
   }
 
   useEffect(() => {
@@ -147,38 +150,11 @@ export default function BusRoute() {
           <MapComponent centerPoint={getCityCenterPoint(city)}/>
         </div>
       )}
-      <div className="modal fade show"
-        ref={favoriteModalRef}>
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-body pt-13 pb-10">
-              <div className="d-flex justify-content-center mb-6">
-                <div className={`d-flex justify-content-center align-items-center rounded-circle ${isFavorite ? 'bg-primary-100' : 'bg-secondary'}`}
-                  style={{
-                    width: '65px',
-                    height: '65px',
-                  }}>
-                  <span className="material-symbols-rounded text-light display-4 fw-bold">
-                    { isFavorite ? 'check' : 'close' }
-                  </span>
-                </div>
-              </div>
-              <p className="text-center mb-8 fs-1 fw-bold">
-                { isFavorite ? '已加入收藏' : '已移除收藏'}
-              </p>
-              <div className="d-flex justify-content-center">
-                <button type="button" className="btn btn-outline-primary py-1 px-5 rounded-pill me-3"
-                  data-bs-dismiss="modal">
-                  關閉
-                </button>
-                <button type="button" className="btn btn-primary py-1 px-5 rounded-pill">
-                  查看收藏
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ModalFavorite
+        favoriteModalRef={favoriteModalRef}
+        isFavorite={isFavorite}
+        closeModal={closeModal}
+      />
     </div>
   )
 }

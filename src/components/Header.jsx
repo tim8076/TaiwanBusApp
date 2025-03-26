@@ -34,7 +34,7 @@ export default function Header() {
             <NavLink>站點查詢</NavLink>
           </li>
           <li className="me-4 me-lg-12">
-            <NavLink>我的收藏</NavLink>
+            <NavLink to="/bus-favorites">我的收藏</NavLink>
           </li>
         </ul>
         <button type="button"

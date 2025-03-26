@@ -3,7 +3,7 @@ import heartIconFill from '../assets/images/icons/carbon_favorite-filled.svg';
 import { getCityNameChinese } from '../tools/cityMap';
 import { Link } from 'react-router-dom';
 
-export default function CardRoute({ route, favoriteRoutes, handleFavoriteSave }) {
+export default function CardRoute({ route, favoriteRoutes, handleFavoriteSave, className }) {
   const isFavorite = favoriteRoutes.find(item => item.RouteID === route.RouteID);
   const icon = isFavorite ? heartIconFill : heartIcon;
 
@@ -14,7 +14,7 @@ export default function CardRoute({ route, favoriteRoutes, handleFavoriteSave })
 
   return (
     <Link to={`/bus-stops?city=${route.City}&routeName=${route.RouteName.Zh_tw}`}
-      className="d-block px-3">
+      className={`d-block px-3 ${className}`}>
       <div className="d-flex justify-content-between mb-1">
         <h2 className="fs-1">
           { route.RouteName?.Zh_tw }
