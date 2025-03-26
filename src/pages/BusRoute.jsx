@@ -1,14 +1,16 @@
-import { NavLink, Link } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 import mapIcon from '../assets/images/icons/bi_map.svg'
-import heartIcon from '../assets/images/icons/carbon_favorite.svg'
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getBusRouteByCity } from "../slice/busSlice"
 import { useParams } from "react-router-dom"
 import { getCityNameChinese, getCityCenterPoint } from "../tools/cityMap"
+import CardRoute from "../components/CardRoute"
 import MapComponent from "../components/MapComponent"
 import Keyboard from '../components/Keyboard'
 import KeyboardTaipei from "../components/KeyboardTaipei"
+import useLocalStorage from "../hooks/useLocalStorage"
+import { Modal } from "bootstrap"
 export default function BusRoute() {
   const [isMapShow, setIsMapShow] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -23,7 +25,8 @@ export default function BusRoute() {
       setSearchText(pre => pre + text);
     }
   }
-
+  console.log(busRoutes)
+  
   const backSearch = () => {
     setSearchText(searchText.slice(0, -1));
   }
@@ -41,8 +44,35 @@ export default function BusRoute() {
     }
   }, [searchText, dispatch, city]);
 
+  // 我的收藏
+  const [favoriteRoutes, setFavorites] = useLocalStorage('favoriteBusRoutes', []);
+  const favoriteModalRef = useRef(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const handleFavoriteSave = (route) => {
+    const routeIndex = favoriteRoutes.findIndex(item => {
+      return item.RouteID === route.RouteID;
+    });
+    if (routeIndex < 0) {
+      const addedData = [...favoriteRoutes, route];
+      setFavorites(addedData);
+      setIsFavorite(true);
+    } else {
+      const filteredData = favoriteRoutes.filter(item => item.RouteID !== route.RouteID);
+      setFavorites(filteredData);
+      setIsFavorite(false);
+    }
+    openModal();
+  };
+
+  const openModal = () => {
+    favoriteModalRef.current.show();
+  }
+
+  useEffect(() => {
+    favoriteModalRef.current = new Modal(favoriteModalRef.current);
+  }, []);
   return (
-    <div className="">
+    <div>
       <div className="bg-gray-300 py-2 py-lg-3">
         <div className="container d-flex justify-content-between">
           <nav aria-label="breadcrumb">
@@ -77,23 +107,12 @@ export default function BusRoute() {
               <ul className="list-unstyled overflow-y-scroll h-keyboard">
                 {(searchText && busRoutes.length > 0) && busRoutes.map(route => {
                   return (
-                    <li className="px-3 mb-3"
+                    <li className="mb-3"
                       key={route.RouteUID}>
-                      <Link to={`/bus-stops?city=${route.City}&routeName=${route.RouteName.Zh_tw}`}
-                        className="d-block">
-                        <div className="d-flex justify-content-between mb-1">
-                          <h2 className="fs-1">
-                            { route.RouteName?.Zh_tw }
-                          </h2>
-                          <img src={heartIcon} alt="heartIcon" width={20} height={20}/>
-                        </div>
-                        <div className="d-flex justify-content-between text-gray-600 pb-3 border-bottom border-gray-500">
-                          <h3 className="fs-5">
-                            {route.DepartureStopNameZh} - {route.DestinationStopNameZh}
-                          </h3>
-                          <p className="fs-5">{getCityNameChinese(route.City)}</p>
-                        </div>
-                      </Link>
+                      <CardRoute route={route}
+                        favoriteRoutes={favoriteRoutes}
+                        handleFavoriteSave={handleFavoriteSave}
+                      />
                     </li>
                   )
                 })}
@@ -128,6 +147,38 @@ export default function BusRoute() {
           <MapComponent centerPoint={getCityCenterPoint(city)}/>
         </div>
       )}
+      <div className="modal fade show"
+        ref={favoriteModalRef}>
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body pt-13 pb-10">
+              <div className="d-flex justify-content-center mb-6">
+                <div className={`d-flex justify-content-center align-items-center rounded-circle ${isFavorite ? 'bg-primary-100' : 'bg-secondary'}`}
+                  style={{
+                    width: '65px',
+                    height: '65px',
+                  }}>
+                  <span className="material-symbols-rounded text-light display-4 fw-bold">
+                    { isFavorite ? 'check' : 'close' }
+                  </span>
+                </div>
+              </div>
+              <p className="text-center mb-8 fs-1 fw-bold">
+                { isFavorite ? '已加入收藏' : '已移除收藏'}
+              </p>
+              <div className="d-flex justify-content-center">
+                <button type="button" className="btn btn-outline-primary py-1 px-5 rounded-pill me-3"
+                  data-bs-dismiss="modal">
+                  關閉
+                </button>
+                <button type="button" className="btn btn-primary py-1 px-5 rounded-pill">
+                  查看收藏
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
