@@ -1,20 +1,24 @@
 import { NavLink } from "react-router-dom"
 import mapIcon from '../assets/images/icons/bi_map.svg'
 import heartIcon from '../assets/images/icons/carbon_favorite.svg'
+import heartIconFill from '../assets/images/icons/carbon_favorite-filled.svg'
 import infoIcon from '../assets/images/icons/info-icon.svg'
 import arrowLeftIcom from '../assets/images/icons/arrow-left.svg'
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getCityNameChinese } from "../tools/cityMap"
 import MapBusStops from '../components/MapBusStops';
 import { Link, useSearchParams } from "react-router-dom"
 import { showBusStatus } from "../tools/tools"
+import { Modal } from "bootstrap"
+import ModalFavorite from "../components/ModalFavorite"
 import {
   getBusStops,
   getBusRouteInfo,
   getBusRouteTime,
   getBusPosition,
 } from "../slice/busSlice"
+import useLocalStorage from "../hooks/useLocalStorage"
 export default function BusRoute() {
   const [isMapShow, setIsMapShow] = useState(false);
   const [searchParams, setsearchParams] = useSearchParams();
@@ -97,6 +101,34 @@ export default function BusRoute() {
   // 選取站牌功能
   const [selectBusStop, setSelectBusStop] = useState('');
 
+  // 收藏功能
+  const [favoriteRoutes, setFavorites] = useLocalStorage('favoriteBusRoutes', []);
+  const favoriteModalRef = useRef(null);
+  const isFavorite = favoriteRoutes.find(item => item.RouteID === routeInfo.RouteID);
+  const heartIconSrc = isFavorite ? heartIconFill : heartIcon; 
+  
+  const handleFavoriteSave = (route) => {
+    const routeIndex = favoriteRoutes.findIndex(item => {
+      return item.RouteID === route.RouteID;
+    });
+    if (routeIndex < 0) {
+      const addedData = [...favoriteRoutes, route];
+      setFavorites(addedData);
+    } else {
+      const filteredData = favoriteRoutes.filter(item => item.RouteID !== route.RouteID);
+      setFavorites(filteredData);
+    }
+    openModal();
+  };
+  const openModal = () => {
+    favoriteModalRef.current.show();
+  }
+  const closeModal = () => {
+    favoriteModalRef.current.hide();
+  }
+  useEffect(() => {
+    favoriteModalRef.current = new Modal(favoriteModalRef.current);
+  }, []);
   return (
     <div className="">
       <div className="bg-gray-300 py-2 py-lg-3">
@@ -147,8 +179,9 @@ export default function BusRoute() {
                   <span className="ms-1">返回搜尋</span>
                 </Link>
                 <button type="button"
-                  className="btn p-0">
-                  <img src={heartIcon} alt="heartIcon" width={20} height={20} />
+                  className="btn p-0"
+                  onClick={() => handleFavoriteSave(routeInfo)}>
+                  <img src={heartIconSrc} alt="heartIcon" width={20} height={20} />
                 </button>
               </div>
               <h1 className="fs-lg fw-bold text-center mb-1">
@@ -231,6 +264,11 @@ export default function BusRoute() {
           )}
         </div>
       )}
+      <ModalFavorite
+        favoriteModalRef={favoriteModalRef}
+        isFavorite={isFavorite}
+        closeModal={closeModal}
+      />
     </div>
   )
 }
