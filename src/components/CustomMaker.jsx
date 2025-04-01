@@ -1,6 +1,7 @@
 import { Marker, Popup, useMap } from "react-leaflet";
 import { useEffect, useRef, useState } from 'react';
 import busIcon from '../assets/images/icons/carbon_bus-light.svg';
+import PropTypes from 'prop-types';
 export default function CustomMaker({ index, station, marker, bgColor, zoomThreshold = 10 }) {
   const map = useMap();
   const markerRef = useRef(null);
@@ -45,4 +46,12 @@ export default function CustomMaker({ index, station, marker, bgColor, zoomThres
       )}
     </>
   )
+}
+
+CustomMaker.propTypes = {
+  index: PropTypes.number,
+  station: PropTypes.object,
+  marker: PropTypes.object,
+  bgColor: PropTypes.string,
+  zoomThreshold: PropTypes.number
 }

@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, } from "react-leaflet";
+import PropTypes from 'prop-types';
 
 export default function MapComponent({ centerPoint }) {
-  console.log(centerPoint)
   return (
     <MapContainer
       center={centerPoint} // 台北 101 經緯度
@@ -19,4 +19,8 @@ export default function MapComponent({ centerPoint }) {
       </Marker>
     </MapContainer>
   );
+}
+
+MapComponent.propTypes = {
+  center: PropTypes.array,
 }

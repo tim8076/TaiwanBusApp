@@ -39,6 +39,7 @@ export default function BusFavorites() {
                     <CardRoute route={route}
                       favoriteRoutes={favoriteRoutes}
                       handleFavoriteSave={handleFavoriteSave}
+                      isConfirm={true}
                       className="bg-gray-300-hover py-3 transition-base"
                     />
                   </div>)

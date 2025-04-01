@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types';
 
 export default function KeyboardTaipei({ searchBusRoute, searchText, backSearch, setSearchText }) {
   return (
@@ -214,4 +214,11 @@ export default function KeyboardTaipei({ searchBusRoute, searchText, backSearch,
       </ul>
     </div>
   )
+}
+
+KeyboardTaipei.propTypes = {
+  searchBusRoute: PropTypes.func,
+  searchText: PropTypes.string,
+  backSearch: PropTypes.func,
+  setSearchText: PropTypes.func,
 }

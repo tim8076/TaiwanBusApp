@@ -1,6 +1,5 @@
-import React from 'react'
-
-export default function KeyboardTaipei({ searchBusRoute, searchText, backSearch, setSearchText }) {
+import PropTypes from 'prop-types';
+export default function Keyboard({ searchBusRoute, searchText, backSearch, setSearchText }) {
   return (
     <div className="container">
       <ul className="row gx-2 list-unstyled mb-3">
@@ -135,3 +134,12 @@ export default function KeyboardTaipei({ searchBusRoute, searchText, backSearch,
     </div>
   )
 }
+
+Keyboard.propTypes = {
+  searchBusRoute: PropTypes.func,
+  searchText: PropTypes.string,
+  backSearch: PropTypes.func,
+  setSearchText: PropTypes.func,
+}
+
+

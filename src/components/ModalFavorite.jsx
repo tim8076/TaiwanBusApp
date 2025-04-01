@@ -1,5 +1,6 @@
 
 import { useNavigate } from "react-router-dom"
+import PropTypes from 'prop-types'
 export default function ModalFavorite({ favoriteModalRef, isFavorite, closeModal }) {
   const navigate = useNavigate();
   const checkFavorite = () => {
@@ -44,4 +45,10 @@ export default function ModalFavorite({ favoriteModalRef, isFavorite, closeModal
       </div>
     </div>
   )
+}
+
+ModalFavorite.propTypes = {
+  favoriteModalRef: PropTypes.object,
+  isFavorite: PropTypes.bool,
+  closeModal: PropTypes.func,
 }

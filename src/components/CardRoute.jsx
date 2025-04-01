@@ -2,14 +2,21 @@ import heartIcon from '../assets/images/icons/carbon_favorite.svg';
 import heartIconFill from '../assets/images/icons/carbon_favorite-filled.svg';
 import { getCityNameChinese } from '../tools/cityMap';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { alertConfirm } from '../tools/sweetAlert';
 
-export default function CardRoute({ route, favoriteRoutes, handleFavoriteSave, className }) {
+export default function CardRoute({ route, favoriteRoutes, handleFavoriteSave, className, isConfirm }) {
   const isFavorite = favoriteRoutes.find(item => item.RouteID === route.RouteID);
   const icon = isFavorite ? heartIconFill : heartIcon;
 
-  const toggleFavorite = (e) => {
+  const toggleFavorite = async (e) => {
     e.preventDefault();
-    handleFavoriteSave(route);
+    if (isConfirm) {
+      const res = await alertConfirm(`確認移除路線 ${route.RouteName.Zh_tw}?`);
+      if (res.isConfirmed) handleFavoriteSave(route);
+    } else {
+      handleFavoriteSave(route);
+    }
   };
 
   return (
@@ -33,4 +40,12 @@ export default function CardRoute({ route, favoriteRoutes, handleFavoriteSave, c
       </div>
     </Link>
   )
+}
+
+CardRoute.propTypes = {
+  route: PropTypes.object,
+  favoriteRoutes: PropTypes.array,
+  handleFavoriteSave: PropTypes.func,
+  className: PropTypes.string,
+  isConfirm: PropTypes.bool
 }

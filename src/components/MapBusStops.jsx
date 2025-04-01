@@ -1,5 +1,5 @@
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
-import { memo, useEffect, useRef } from "react";
+import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet";
+import { memo } from "react";
 import { showBusStatus } from "../tools/tools";
 import L from 'leaflet';
 import markerIcon from '../assets/images/icons/bus-stop-marker.png';
@@ -9,6 +9,7 @@ import FixMapDisplay from './FixMapDisplay';
 import MapFitBound from "./MapFitBound";
 import MapMoveToStop from "./MapMoveToStop";
 import CustomMaker from "./CustomMaker";
+import PropTypes from 'prop-types'
 const stopMarker = new L.Icon({
   iconUrl: markerIcon,
 });
@@ -19,7 +20,8 @@ const busIcon = new L.Icon({
   iconUrl: busArriveIcon,
   iconAnchor: [20, -10],
 });
-export default memo(function MapComponent({ currentStops, selectBusStop, busRealTimePositions }) {
+
+function MapComponent({ currentStops, selectBusStop, busRealTimePositions }) {
   const route = currentStops.map((stop) => {
     const { PositionLat, PositionLon } = stop.StopPosition;
     return [Number(PositionLat), Number(PositionLon)];
@@ -36,28 +38,16 @@ export default memo(function MapComponent({ currentStops, selectBusStop, busReal
   });
 
   // bus positon
-  console.log('busRealTimePositions', busRealTimePositions);
-  console.log('currentStop', currentStops)
   const busPosition = currentStops.filter(stop => {
     return busRealTimePositions.find(bus => bus.StopID === stop.StopID);
   }).map(bus => {
     const { PositionLat, PositionLon } = bus.StopPosition;
     return [PositionLat, PositionLon];
   });
-  console.log(busPosition)
   
   // 移動到選擇站牌
   const selectStop = currentStops.find((stop) => stop.StopID === selectBusStop);
   const selectStopPosition = [selectStop?.StopPosition?.PositionLat, selectStop?.StopPosition?.PositionLon];
-
-  // 打開選擇站牌的 marker
-  // const markerRefs = useRef([]);
-  // useEffect(() => {
-  //   const marker = markerRefs.current.find(ref => {
-  //     return ref?.options.options.id === selectBusStop;
-  //   });
-  //   if (marker) marker.openPopup();
-  // }, [selectBusStop, markerRefs])
 
   return (
     <MapContainer
@@ -88,25 +78,6 @@ export default memo(function MapComponent({ currentStops, selectBusStop, busReal
             marker={marker}
             bgColor={bgColor}
             zoomThreshold={15}/>
-          // <Marker key={index}
-          //   ref={(el) => (markerRefs.current[index] = el)}
-          //   position={station.position}
-          //   options={{ id: station.id }}
-          //   icon={marker}>
-          //   <Popup className={bgColor}>
-          //     { station.time === '進站中' && (
-          //       <div className="text-center mb-1">
-          //         <img src={busIcon} alt="busIcon" width={25} height={25}/>
-          //       </div>
-          //     )}
-          //     <p className="text-center mt-0 mb-1 fs-6">
-          //       {station.name}
-          //     </p>
-          //     <p className="text-center my-0 fs-6">
-          //       {station.time}
-          //     </p>
-          //   </Popup>
-          // </Marker>
         )
       })}
 
@@ -125,4 +96,12 @@ export default memo(function MapComponent({ currentStops, selectBusStop, busReal
       <FixMapDisplay />
     </MapContainer>
   );
-});
+}
+
+MapComponent.propTypes = {
+  currentStops: PropTypes.array,
+  selectBusStop: PropTypes.string,
+  busRealTimePositions: PropTypes.array,
+}
+
+export default memo(MapComponent);

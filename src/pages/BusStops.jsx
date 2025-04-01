@@ -209,7 +209,7 @@ export default function BusRoute() {
                   { currentStopsWithBusPosition.map(stop => {
                     const isSelect = selectBusStop === stop.StopID;
                     return (
-                      <li className={`bus-stop-item py-4 d-flex align-items-center border-bottom border-gray-500 ${showBusStatus(stop.time, stop.status).class} position-relative ${isSelect ? 'bg-gray-300' : ''}`}
+                      <li className={`bus-stop-item py-4 d-flex align-items-center border-bottom border-gray-500 bg-gray-300-hover transition-base ${showBusStatus(stop.time, stop.status).class} position-relative ${isSelect ? 'bg-gray-300' : ''}`}
                         key={stop.StopID}>
                         <button type="button"
                           className="btn p-0 stretched-link"

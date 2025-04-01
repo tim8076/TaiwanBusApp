@@ -1,6 +1,6 @@
 import { useMap } from 'react-leaflet';
 import { useEffect } from 'react';
-
+import PropTypes from 'prop-types';
 export default function MapMoveToStop({ position }) {
   const map = useMap();
   useEffect(() => {
@@ -8,4 +8,8 @@ export default function MapMoveToStop({ position }) {
     setTimeout(() => map.fire('zoomend'), 0); // ✅ 強制觸發 `zoomend` 事件
   }, [map, position]);
   return null;
+}
+
+MapMoveToStop.propTypes = {
+  position: PropTypes.array,
 }

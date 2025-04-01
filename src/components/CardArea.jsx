@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom"
+import PropTypes from 'prop-types'
 export default function CardArea({ place }) {
   return (
     <NavLink className={`bg-light d-block py-5 py-lg-8 rounded-3 shadow-lg text-center ${place.color} bg-gray-500-hover transition-base`}
@@ -16,4 +17,8 @@ xmlns="http://www.w3.org/2000/svg">
       <h3 className='fs-6'>{place.subtitle}</h3>
     </NavLink>
   )
+}
+
+CardArea.propTypes = {
+  place: PropTypes.object,
 }
