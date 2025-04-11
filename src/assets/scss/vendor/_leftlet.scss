@@ -10,6 +10,13 @@
   border: 2px solid $light !important;
 }
 
+.leaflet-popup.notActive .leaflet-popup-content-wrapper {
+  background-color: $gray-600 !important;
+  color: $light !important;
+  border: 2px solid $light !important;
+}
+
+
 .leaflet-container .leaflet-popup a.leaflet-popup-close-button {
   display: none;
 }

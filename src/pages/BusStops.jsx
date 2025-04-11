@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom"
 import mapIcon from '../assets/images/icons/bi_map.svg'
+import linkIcon from '../assets/images/icons/ant-design_link-outlined.svg'
 import heartIcon from '../assets/images/icons/carbon_favorite.svg'
 import heartIconFill from '../assets/images/icons/carbon_favorite-filled.svg'
 import infoIcon from '../assets/images/icons/info-icon.svg'
@@ -19,9 +20,10 @@ import {
   getBusPosition,
 } from "../slice/busSlice"
 import useLocalStorage from "../hooks/useLocalStorage"
+import { alertInfo, alertError } from "../tools/sweetAlert"
 export default function BusRoute() {
   const [isMapShow, setIsMapShow] = useState(false);
-  const [searchParams, setsearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const city = searchParams.get('city');
   const routeName = searchParams.get('routeName');
   const dispatch = useDispatch();
@@ -33,7 +35,6 @@ export default function BusRoute() {
     busStopsEstimatedTime,
     busRealTimePositions,
   } = useSelector((state) => state.bus);
-  console.log(busRealTimePositions)
   const [routeDirection, setRouteDirection] = useState(0);
   const changeRouteDirection = (direction) => {
     setRouteDirection(direction);
@@ -65,7 +66,7 @@ export default function BusRoute() {
         PlateNumb: bus.PlateNumb,
       } 
     });
-  }, [currentStops]);
+  }, [currentStops, busRealTimePositions]);
   const routeInfo = busRouteInfo.find(route => route.RouteID === busStops[0]?.RouteID) || {};
   
   const getBusData = ({ city, routeName }) => {
@@ -129,6 +130,16 @@ export default function BusRoute() {
   useEffect(() => {
     favoriteModalRef.current = new Modal(favoriteModalRef.current);
   }, []);
+
+  const copyLink = async () => {
+    try {
+      const url = window.location.href;
+      await navigator.clipboard.writeText(url);
+      alertInfo('複製連結成功');
+    } catch (error) {
+      alertError(error);
+    }
+  }
   return (
     <div className="">
       <div className="bg-gray-300 py-2 py-lg-3">
@@ -146,6 +157,18 @@ export default function BusRoute() {
             </ol>
           </nav>
           <ul className="list-unstyled d-flex align-items-center">
+            <li className="d-none d-md-block me-3">
+              <button type="button"
+                className="btn p-0"
+                onClick={copyLink}>
+                <img src={linkIcon}
+                  className="me-1"
+                  alt="linkIcon"
+                  width={16}
+                  height={16} />
+                複製連結
+              </button>
+            </li>
             <li className="me-3 me-md-0">
               <NavLink className="d-flex align-items-center"
                 to={`/bus-info?city=${city}&routeName=${routeName}`}>

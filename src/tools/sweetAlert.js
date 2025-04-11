@@ -9,3 +9,17 @@ export const alertConfirm = (text) => {
     cancelButtonText: '取消',
   });
 }
+
+export const alertInfo = (text) => {
+  return Swal.fire({
+    title: text,
+    icon: 'success',
+  });
+}
+
+export const alertError = (text) => {
+  return Swal.fire({
+    title: text,
+    icon: 'error',
+  });
+}

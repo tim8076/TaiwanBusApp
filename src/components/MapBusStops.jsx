@@ -65,11 +65,14 @@ function MapComponent({ currentStops, selectBusStop, busRealTimePositions }) {
         color="#355F8B"
         weight={4}/>
       {stations.map((station, index) => {
+        console.log(station)
         const marker = (station.time === '進站中' || station.time === '即將到站')
           ? stopMarkerActive
           : stopMarker;
         const bgColor = (station.time === '進站中' || station.time === '即將到站')
           ? 'active'
+          : (station.time === '尚未發車')
+          ? 'notActive'
           : '';
         return (
           <CustomMaker index={index}
