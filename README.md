@@ -1,8 +1,11 @@
-# React + Vite
+# 台灣公車 e 點通
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![](../bus-time-app/src/assets/images/banner.png)
 
-Currently, two official plugins are available:
+[線上觀看連結]()
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 安裝
+
+Node.js 版本建議為：v20.10.0 以上
+
+### 取得專案
