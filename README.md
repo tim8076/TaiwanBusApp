@@ -1,6 +1,6 @@
 # 台灣公車 e 點通
 
-![](./assets/images/banner.png)
+![](banner.png)
 
 [線上觀看連結](https://tim8076.github.io/TaiwanBusApp/#/)
 
